@@ -12,9 +12,10 @@ class TodoListProvider with ChangeNotifier {
 
   List<Todo> get todos => _todos;
 
-  void addTodo(String description) {
+  void addTodo(String title, String? description) {
     final todo = Todo(
       id: DateTime.now().toString(),
+      title: title,
       description: description,
     );
     _todos.add(todo);
