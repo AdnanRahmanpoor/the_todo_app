@@ -10,4 +10,18 @@ class Todo {
   void toggleCompleted() {
     completed = !completed;
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'description': description,
+        'completed': completed,
+      };
+
+  static Todo fromJson(Map<String, dynamic> json) {
+    return Todo(
+      id: json['id'],
+      description: json['description'],
+      completed: json['completed'],
+    );
+  }
 }
