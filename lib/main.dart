@@ -88,41 +88,61 @@ class TodoList extends StatelessWidget {
             return Dismissible(
               key: Key(todo.id),
               background: Container(
+                color: Colors.green,
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Icon(Icons.check, color: Colors.white),
+              ),
+              secondaryBackground: Container(
                 color: Colors.red,
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Icon(Icons.delete, color: Colors.white),
               ),
-              direction: DismissDirection.endToStart,
+              direction: DismissDirection.horizontal,
               confirmDismiss: (direction) async {
-                return await showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Confirm Deletion'),
-                      content:
-                          Text('Are you sure you want to delete ${todo.title}'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: Text('Delete'),
-                        ),
-                      ],
-                    );
-                  },
-                );
+                if (direction == DismissDirection.endToStart) {
+                  return await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Confirm Deletion'),
+                        content: Text(
+                            'Are you sure you want to delete ${todo.title}'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: Text('Delete'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else if (direction == DismissDirection.startToEnd) {
+                  // Confirm completion
+                  // PLaceholder for completion logic
+                }
               },
               onDismissed: (direction) {
-                Provider.of<TodoListProvider>(context, listen: false)
-                    .deleteTodo(todo.id);
+                if (direction == DismissDirection.endToStart) {
+                  Provider.of<TodoListProvider>(context, listen: false)
+                      .deleteTodo(todo.id);
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Task Deleted')),
-                );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Task Deleted')),
+                  );
+                } else if (direction == DismissDirection.startToEnd) {
+                  Provider.of<TodoListProvider>(context, listen: false)
+                      .toggleTodoCompletion(todo.id);
+
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   SnackBar(content: Text('Task Marked Completed.')),
+                  // );
+                }
               },
               child: Card(
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
